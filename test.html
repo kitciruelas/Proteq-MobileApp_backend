@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - User Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .response-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .response-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-info { background-color: #17a2b8; }
+
+        .endpoint-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .endpoint-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-info code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 User Authentication API Test</h1>
+            <p>Test the signup and login endpoints for the ProteQ system</p>
+        </div>
+
+        <!-- Signup Test Section -->
+        <div class="test-section">
+            <h2>📝 User Registration Test</h2>
+            
+            <div class="endpoint-info">
+                <h3>Endpoint Information:</h3>
+                <p><strong>URL:</strong> <code>POST /controller/User/Signup.php</code></p>
+                <p><strong>Content-Type:</strong> <code>application/json</code></p>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="signupFirstName">First Name *</label>
+                        <input type="text" id="signupFirstName" required placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Last Name *</label>
+                        <input type="text" id="signupLastName" required placeholder="Enter last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email *</label>
+                        <input type="email" id="signupEmail" required placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password *</label>
+                        <input type="password" id="signupPassword" required placeholder="Enter password (min 6 chars)">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupUserType">User Type</label>
+                        <select id="signupUserType">
+                            <option value="STUDENT">Student</option>
+                            <option value="FACULTY">Faculty</option>
+                            <option value="UNIVERSITY_EMPLOYEE">University Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupDepartment">Department</label>
+                        <input type="text" id="signupDepartment" placeholder="Enter department">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupCollege">College</label>
+                        <input type="text" id="signupCollege" placeholder="Enter college">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn">🚀 Register User</button>
+                    <button type="button" class="btn btn-secondary" onclick="fillSampleSignupData()">📋 Fill Sample Data</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearSignupForm()">🗑️ Clear Form</button>
+                </div>
+            </form>
+            
+            <div id="signupResponse" class="response-area"></div>
+        </div>
+
+        <!-- Login Test Section -->
+        <div class="test-section">
+            <h2>🔑 User Login Test</h2>
+            
+            <div class="endpoint-info">
+                <h3>Endpoint Information:</h3>
+                <p><strong>URL:</strong> <code>POST /controller/User/Login.php</code></p>
+                <p><strong>Content-Type:</strong> <code>application/json</code></p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="loginEmail">Email *</label>
+                        <input type="email" id="loginEmail" required placeholder="Enter registered email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password *</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter password">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn">🔐 Login User</button>
+                    <button type="button" class="btn btn-secondary" onclick="fillSampleLoginData()">📋 Fill Sample Data</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearLoginForm()">🗑️ Clear Form</button>
+                </div>
+            </form>
+            
+            <div id="loginResponse" class="response-area"></div>
+        </div>
+
+        <!-- Quick Test Section -->
+        <div class="test-section">
+            <h2>⚡ Quick Test</h2>
+            <p>Test with pre-filled data to quickly verify API functionality:</p>
+            
+            <div style="margin-top: 15px;">
+                <button type="button" class="btn" onclick="quickTest()">🧪 Run Quick Test</button>
+                <button type="button" class="btn btn-secondary" onclick="clearAllResponses()">🗑️ Clear All Responses</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Signup Form Handler
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                first_name: document.getElementById('signupFirstName').value.trim(),
+                last_name: document.getElementById('signupLastName').value.trim(),
+                email: document.getElementById('signupEmail').value.trim(),
+                password: document.getElementById('signupPassword').value,
+                user_type: document.getElementById('signupUserType').value,
+                department: document.getElementById('signupDepartment').value.trim(),
+                college: document.getElementById('signupCollege').value.trim()
+            };
+
+            await makeRequest('http://localhost/controller/User/Signup.php', formData, 'signupResponse');   
+        });
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                email: document.getElementById('loginEmail').value.trim(),
+                password: document.getElementById('loginPassword').value
+            };
+
+            await makeRequest('http://localhost/controller/User/Login.php', formData, 'loginResponse');
+        });
+
+        // Generic request function
+        async function makeRequest(endpoint, data, responseElementId) {
+            const responseDiv = document.getElementById(responseElementId);
+            const startTime = Date.now();
+            
+            try {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response-area response-info';
+                responseDiv.innerHTML = `<span class="status-indicator status-info"></span>Making request to ${endpoint}...`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                responseDiv.className = 'response-area ' + (result.success ? 'response-success' : 'response-error');
+                responseDiv.innerHTML = `<span class="status-indicator ${result.success ? 'status-success' : 'status-error'}"></span>Response (${duration}ms):\n\n` + 
+                                      `Status: ${response.status} ${response.statusText}\n` +
+                                      `Endpoint: ${endpoint}\n\n` +
+                                      `Request Data:\n${JSON.stringify(data, null, 2)}\n\n` +
+                                      `Response Data:\n${JSON.stringify(result, null, 2)}`;
+
+            } catch (error) {
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                responseDiv.className = 'response-area response-error';
+                responseDiv.innerHTML = `<span class="status-indicator status-error"></span>Error (${duration}ms):\n\n` +
+                                      `Endpoint: ${endpoint}\n` +
+                                      `Error: ${error.message}\n\n` +
+                                      `Request Data:\n${JSON.stringify(data, null, 2)}`;
+            }
+        }
+
+        // Sample data functions
+        function fillSampleSignupData() {
+            document.getElementById('signupFirstName').value = 'John';
+            document.getElementById('signupLastName').value = 'Doe';
+            document.getElementById('signupEmail').value = 'john.doe@test.com';
+            document.getElementById('signupPassword').value = 'password123';
+            document.getElementById('signupUserType').value = 'STUDENT';
+            document.getElementById('signupDepartment').value = 'CICS';
+            document.getElementById('signupCollege').value = 'College of Information and Computing Sciences';
+        }
+
+        function fillSampleLoginData() {
+            document.getElementById('loginEmail').value = 'john.doe@test.com';
+            document.getElementById('loginPassword').value = 'password123';
+        }
+
+        function clearSignupForm() {
+            document.getElementById('signupForm').reset();
+        }
+
+        function clearLoginForm() {
+            document.getElementById('loginForm').reset();
+        }
+
+        function clearAllResponses() {
+            document.getElementById('signupResponse').style.display = 'none';
+            document.getElementById('loginResponse').style.display = 'none';
+        }
+
+        // Quick test function
+        async function quickTest() {
+            clearAllResponses();
+            
+            // Fill sample data
+            fillSampleSignupData();
+            fillSampleLoginData();
+            
+            // Show info message
+            const signupResponse = document.getElementById('signupResponse');
+            signupResponse.style.display = 'block';
+            signupResponse.className = 'response-area response-info';
+            signupResponse.innerHTML = `<span class="status-indicator status-info"></span>Quick test started...\n\nForms have been filled with sample data.\nClick "Register User" to test signup, then "Login User" to test login.`;
+        }
+
+        // Auto-fill login with registered email (if available)
+        function autoFillLoginEmail(email) {
+            document.getElementById('loginEmail').value = email;
+        }
+
+        // Listen for successful signup to auto-fill login
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener to auto-fill login email after successful signup
+            const signupResponse = document.getElementById('signupResponse');
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && signupResponse.innerHTML.includes('"success": true')) {
+                        const email = document.getElementById('signupEmail').value;
+                        if (email) {
+                            autoFillLoginEmail(email);
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(signupResponse, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+</html>

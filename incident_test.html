@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Report API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Incident Report API Test</h1>
+
+    <!-- Create Incident Report -->
+    <div class="container">
+        <h2>Create Incident Report</h2>
+        <form id="createIncidentForm">
+            <div class="form-group">
+                <label for="incident_type">Incident Type:</label>
+                <select id="incident_type" required>
+                    <option value="">Select type</option>
+                    <option value="fire">Fire</option>
+                    <option value="earthquake">Earthquake</option>
+                    <option value="flood">Flood</option>
+                    <option value="typhoon">Typhoon</option>
+                    <option value="medical">Medical</option>
+                    <option value="security">Security</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" rows="3" required placeholder="Describe the incident..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="latitude">Latitude:</label>
+                <input type="number" id="latitude" step="any" required placeholder="e.g., 14.5995">
+            </div>
+            <div class="form-group">
+                <label for="longitude">Longitude:</label>
+                <input type="number" id="longitude" step="any" required placeholder="e.g., 120.9842">
+            </div>
+            <div class="form-group">
+                <label for="reported_by">Reported By (User ID):</label>
+                <input type="number" id="reported_by" required placeholder="e.g., 1">
+            </div>
+            <div class="form-group">
+                <label for="priority_level">Priority Level:</label>
+                <select id="priority_level">
+                    <option value="low">Low</option>
+                    <option value="moderate" selected>Moderate</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reporter_safe_status">Reporter Safe Status:</label>
+                <select id="reporter_safe_status">
+                    <option value="safe">Safe</option>
+                    <option value="injured">Injured</option>
+                    <option value="unknown" selected>Unknown</option>
+                </select>
+            </div>
+            <button type="submit">Create Incident Report</button>
+        </form>
+        <div id="createResponse" class="response"></div>
+    </div>
+
+    <!-- Get All Incidents -->
+    <div class="container">
+        <h2>Get All Incidents</h2>
+        <button onclick="getAllIncidents()">Get All Incidents</button>
+        <div class="form-group">
+            <label for="status_filter">Filter by Status:</label>
+            <select id="status_filter">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+            </select>
+        </div>
+        <div id="getAllResponse" class="response"></div>
+    </div>
+
+    <!-- Get Incident by ID -->
+    <div class="container">
+        <h2>Get Incident by ID</h2>
+        <div class="form-group">
+            <label for="incident_id">Incident ID:</label>
+            <input type="number" id="incident_id" placeholder="Enter incident ID">
+        </div>
+        <button onclick="getIncidentById()">Get Incident</button>
+        <div id="getByIdResponse" class="response"></div>
+    </div>
+
+    <!-- Update Incident Status -->
+    <div class="container">
+        <h2>Update Incident Status</h2>
+        <div class="form-group">
+            <label for="update_incident_id">Incident ID:</label>
+            <input type="number" id="update_incident_id" placeholder="Enter incident ID">
+        </div>
+        <div class="form-group">
+            <label for="new_status">New Status:</label>
+            <select id="new_status">
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+            </select>
+        </div>
+        <button onclick="updateIncidentStatus()">Update Status</button>
+        <div id="updateStatusResponse" class="response"></div>
+    </div>
+
+    <!-- Validate Incident -->
+    <div class="container">
+        <h2>Validate Incident</h2>
+        <div class="form-group">
+            <label for="validate_incident_id">Incident ID:</label>
+            <input type="number" id="validate_incident_id" placeholder="Enter incident ID">
+        </div>
+        <div class="form-group">
+            <label for="validation_status">Validation Status:</label>
+            <select id="validation_status">
+                <option value="unvalidated">Unvalidated</option>
+                <option value="validated">Validated</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="validation_notes">Validation Notes:</label>
+            <textarea id="validation_notes" rows="3" placeholder="Enter validation notes..."></textarea>
+        </div>
+        <button onclick="validateIncident()">Validate Incident</button>
+        <div id="validateResponse" class="response"></div>
+    </div>
+
+    <!-- Get Incident Statistics -->
+    <div class="container">
+        <h2>Get Incident Statistics</h2>
+        <button onclick="getIncidentStats()">Get Statistics</button>
+        <div id="statsResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost/api/controller/IncidentReport.php';
+
+        // Create Incident Report
+        document.getElementById('createIncidentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                incident_type: document.getElementById('incident_type').value,
+                description: document.getElementById('description').value,
+                latitude: parseFloat(document.getElementById('latitude').value),
+                longitude: parseFloat(document.getElementById('longitude').value),
+                reported_by: parseInt(document.getElementById('reported_by').value),
+                priority_level: document.getElementById('priority_level').value,
+                reporter_safe_status: document.getElementById('reporter_safe_status').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}?action=create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                displayResponse('createResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('createResponse', { success: false, message: error.message }, false);
+            }
+        });
+
+        // Get All Incidents
+        async function getAllIncidents() {
+            const statusFilter = document.getElementById('status_filter').value;
+            let url = `${API_BASE}?action=get_all`;
+            
+            if (statusFilter) {
+                url += `&status=${statusFilter}`;
+            }
+
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                displayResponse('getAllResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('getAllResponse', { success: false, message: error.message }, false);
+            }
+        }
+
+        // Get Incident by ID
+        async function getIncidentById() {
+            const incidentId = document.getElementById('incident_id').value;
+            
+            if (!incidentId) {
+                displayResponse('getByIdResponse', { success: false, message: 'Please enter an incident ID' }, false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}?action=get_by_id&id=${incidentId}`);
+                const result = await response.json();
+                displayResponse('getByIdResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('getByIdResponse', { success: false, message: error.message }, false);
+            }
+        }
+
+        // Update Incident Status
+        async function updateIncidentStatus() {
+            const incidentId = document.getElementById('update_incident_id').value;
+            const newStatus = document.getElementById('new_status').value;
+            
+            if (!incidentId) {
+                displayResponse('updateStatusResponse', { success: false, message: 'Please enter an incident ID' }, false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}?action=update_status&id=${incidentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await response.json();
+                displayResponse('updateStatusResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('updateStatusResponse', { success: false, message: error.message }, false);
+            }
+        }
+
+        // Validate Incident
+        async function validateIncident() {
+            const incidentId = document.getElementById('validate_incident_id').value;
+            const validationStatus = document.getElementById('validation_status').value;
+            const validationNotes = document.getElementById('validation_notes').value;
+            
+            if (!incidentId) {
+                displayResponse('validateResponse', { success: false, message: 'Please enter an incident ID' }, false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}?action=validate&id=${incidentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        validation_status: validationStatus,
+                        validation_notes: validationNotes
+                    })
+                });
+
+                const result = await response.json();
+                displayResponse('validateResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('validateResponse', { success: false, message: error.message }, false);
+            }
+        }
+
+        // Get Incident Statistics
+        async function getIncidentStats() {
+            try {
+                const response = await fetch(`${API_BASE}?action=stats`);
+                const result = await response.json();
+                displayResponse('statsResponse', result, response.ok);
+            } catch (error) {
+                displayResponse('statsResponse', { success: false, message: error.message }, false);
+            }
+        }
+
+        // Helper function to display responses
+        function displayResponse(elementId, data, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = `response ${isSuccess ? 'success' : 'error'}`;
+        }
+    </script>
+</body>
+</html> 
