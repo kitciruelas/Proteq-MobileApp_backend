@@ -1,0 +1,1 @@
+{"incident_type":"Fire","description":"sas","longitude":121.438208,"latitude":13.811712,"priority_level":"Moderate","safety_status":"injured"}

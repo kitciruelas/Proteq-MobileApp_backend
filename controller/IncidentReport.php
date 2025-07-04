@@ -1,11 +1,18 @@
 <?php
-// Start session to access $_SESSION
-session_start();
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowed_origins = [
+    'http://localhost:59602',
+    'http://localhost:50033',
+    'http://127.0.0.1:50033',
+    // Add more frontend origins as needed
+];
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -14,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Check if database connection is available
 try {
+    require_once __DIR__ . '/../config/session.php';
     require_once __DIR__ . '/../config/db.php';
     require_once __DIR__ . '/../model/IncidentReport.php';
 } catch (Exception $e) {
@@ -45,6 +53,41 @@ class IncidentReportController {
      * Create a new incident report
      */
     public function createIncident() {
+        // Get token from Authorization header
+        $token = SessionManager::getTokenFromHeader();
+        
+        // Set user info based on authentication status
+        if ($token && SessionManager::isLoggedIn($token)) {
+            // Check if session has expired
+            if (SessionManager::isSessionExpired($token)) {
+                http_response_code(401);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Session expired. Please login again.'
+                ]);
+                return;
+            }
+            
+            $currentUserId = SessionManager::getCurrentUserId($token);
+            $currentUserType = SessionManager::getCurrentUserType($token);
+            $currentUserEmail = SessionManager::getCurrentUserEmail($token);
+            $currentUserName = SessionManager::getCurrentUserName($token);
+            
+            // Update session activity
+            SessionManager::updateActivity($token);
+            
+            // Log the authenticated user info for debugging
+            error_log("Incident report by authenticated user: ID=$currentUserId, Type=$currentUserType, Email=$currentUserEmail, Name=$currentUserName");
+        } else {
+            // Require authentication for incident reports
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Authentication required. Please login to submit incident reports.'
+            ]);
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode([
@@ -54,7 +97,11 @@ class IncidentReportController {
             return;
         }
 
-        $input = json_decode(file_get_contents('php://input'), true);
+        $input = null;
+        // Debug: log raw input for troubleshooting
+        $rawInput = file_get_contents('php://input');
+        file_put_contents(__DIR__ . '/../debug_last_input.txt', $rawInput);
+        $input = json_decode($rawInput, true);
 
         if (!$input) {
             http_response_code(400);
@@ -99,9 +146,47 @@ class IncidentReportController {
             return;
         }
 
-        $result = $this->incidentModel->createIncident($input);
+        // Validate priority_level if provided
+        $validPriorityLevels = ['low', 'moderate', 'high', 'critical'];
+        if (isset($input['priority_level'])) {
+            if (!in_array(strtolower($input['priority_level']), $validPriorityLevels)) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid priority level'
+                ]);
+                return;
+            }
+            // Normalize value
+            $input['priority_level'] = strtolower($input['priority_level']);
+        }
+
+        // Validate reporter_safe_status if provided
+        $validSafeStatuses = ['safe', 'injured', 'unknown'];
+        if (isset($input['reporter_safe_status'])) {
+            if (!in_array(strtolower($input['reporter_safe_status']), $validSafeStatuses)) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid reporter safe status'
+                ]);
+                return;
+            }
+            // Normalize value
+            $input['reporter_safe_status'] = strtolower($input['reporter_safe_status']);
+        }
+
+        $result = $this->incidentModel->createIncident($input, $currentUserId);
 
         if ($result['success']) {
+            // Add user information to the response
+            $result['reported_by'] = [
+                'user_id' => $currentUserId,
+                'user_type' => $currentUserType,
+                'email' => $currentUserEmail,
+                'name' => $currentUserName
+            ];
+            
             http_response_code(201);
         } else {
             http_response_code(400);
@@ -109,510 +194,19 @@ class IncidentReportController {
 
         echo json_encode($result);
     }
-
-    /**
-     * Get all incident reports
-     */
-    public function getAllIncidents() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use GET.'
-            ]);
-            return;
-        }
-
-        $filters = [];
-        
-        // Get query parameters
-        if (isset($_GET['status'])) {
-            $filters['status'] = $_GET['status'];
-        }
-        if (isset($_GET['incident_type'])) {
-            $filters['incident_type'] = $_GET['incident_type'];
-        }
-        if (isset($_GET['validation_status'])) {
-            $filters['validation_status'] = $_GET['validation_status'];
-        }
-        if (isset($_GET['priority_level'])) {
-            $filters['priority_level'] = $_GET['priority_level'];
-        }
-
-        $result = $this->incidentModel->getAllIncidents($filters);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Get incident report by ID
-     */
-    public function getIncidentById($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use GET.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->getIncidentById($incidentId);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(404);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Update incident report
-     */
-    public function updateIncident($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use PUT.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!$input) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid JSON data'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->updateIncident($incidentId, $input);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Delete incident report
-     */
-    public function deleteIncident($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use DELETE.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->deleteIncident($incidentId);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(404);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Update incident status
-     */
-    public function updateStatus($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use PUT.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!$input || !isset($input['status'])) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Status field is required'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->updateStatus($incidentId, $input['status']);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Validate incident report
-     */
-    public function validateIncident($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use PUT.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!$input || !isset($input['validation_status'])) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Validation status field is required'
-            ]);
-            return;
-        }
-
-        $validationNotes = $input['validation_notes'] ?? null;
-        $result = $this->incidentModel->validateIncident($incidentId, $input['validation_status'], $validationNotes);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Assign incident to staff
-     */
-    public function assignIncident($incidentId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use PUT.'
-            ]);
-            return;
-        }
-
-        if (!$incidentId || !is_numeric($incidentId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid incident ID is required'
-            ]);
-            return;
-        }
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!$input || !isset($input['staff_id'])) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Staff ID field is required'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->assignIncident($incidentId, $input['staff_id']);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Get incidents by user
-     */
-    public function getIncidentsByUser($userId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use GET.'
-            ]);
-            return;
-        }
-
-        if (!$userId || !is_numeric($userId)) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Valid user ID is required'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->getIncidentsByUser($userId);
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
-
-    /**
-     * Get incident statistics
-     */
-    public function getIncidentStats() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Method not allowed. Use GET.'
-            ]);
-            return;
-        }
-
-        $result = $this->incidentModel->getIncidentStats();
-
-        if ($result['success']) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-
-        echo json_encode($result);
-    }
 }
 
-// Handle the request
-try {
-    $controller = new IncidentReportController();
+// Route the request to the appropriate method
+$controller = new IncidentReportController();
 
-    // Get the action from query parameter or try to parse from URL
-    $action = $_GET['action'] ?? '';
-
-    // If no action in query params, try to parse from URL path
-    if (empty($action)) {
-        $requestUri = $_SERVER['REQUEST_URI'];
-        $path = parse_url($requestUri, PHP_URL_PATH);
-        $pathSegments = explode('/', trim($path, '/'));
-        
-        // Look for the last segment as the action
-        $lastSegment = end($pathSegments);
-        if ($lastSegment && $lastSegment !== 'IncidentReport.php') {
-            $action = $lastSegment;
-        }
-    }
-
-    // If still no action, check if it's a direct method call
-    if (empty($action)) {
-        // Default to get all incidents for GET requests
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $controller->getAllIncidents();
-            exit();
-        }
-        // Default to create for POST requests
-        elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $controller->createIncident();
-            exit();
-        }
-    }
-
-    // Handle specific actions
-    switch ($action) {
-        case 'create':
-            $controller->createIncident();
-            break;
-            
-        case 'get_all':
-        case 'list':
-        case 'incidents':
-            $controller->getAllIncidents();
-            break;
-            
-        case 'get_by_id':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->getIncidentById($incidentId);
-            }
-            break;
-            
-        case 'update':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->updateIncident($incidentId);
-            }
-            break;
-            
-        case 'delete':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->deleteIncident($incidentId);
-            }
-            break;
-            
-        case 'update_status':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->updateStatus($incidentId);
-            }
-            break;
-            
-        case 'validate':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->validateIncident($incidentId);
-            }
-            break;
-            
-        case 'assign':
-            $incidentId = $_GET['id'] ?? null;
-            if (!$incidentId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Incident ID is required'
-                ]);
-            } else {
-                $controller->assignIncident($incidentId);
-            }
-            break;
-            
-        case 'get_by_user':
-            $userId = $_GET['user_id'] ?? null;
-            if (!$userId) {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'User ID is required'
-                ]);
-            } else {
-                $controller->getIncidentsByUser($userId);
-            }
-            break;
-            
-        case 'stats':
-        case 'statistics':
-            $controller->getIncidentStats();
-            break;
-            
-        default:
-            // If no specific action, handle based on HTTP method
-            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                $controller->getAllIncidents();
-            } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->createIncident();
-            } else {
-                http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Invalid action. Available actions: create, get_all, get_by_id, update, delete, update_status, validate, assign, get_by_user, stats'
-                ]);
-            }
-            break;
-    }
-} catch (Exception $e) {
-    http_response_code(500);
+// For POST requests, always route to createIncident
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->createIncident();
+} else {
+    http_response_code(405);
     echo json_encode([
         'success' => false,
-        'message' => 'Internal server error: ' . $e->getMessage()
+        'message' => 'Method not allowed. Use POST.'
     ]);
 }
-?> 
+?>

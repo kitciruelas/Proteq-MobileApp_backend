@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Report API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .success {
+            color: #28a745;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #17a2b8;
+            background-color: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .token-display {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Incident Report API Test</h1>
+    
+    <div class="container">
+        <h2>Step 1: Authentication</h2>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="test@example.com" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="password123" placeholder="Enter your password">
+        </div>
+        <button onclick="login()">Login</button>
+        <button onclick="logout()" id="logoutBtn" disabled>Logout</button>
+        <button onclick="checkSession()" id="sessionBtn" disabled>Check Session</button>
+        
+        <div id="authStatus"></div>
+        <div id="tokenDisplay" class="token-display" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Step 2: Create Incident Report</h2>
+        <div class="form-group">
+            <label for="incidentType">Incident Type:</label>
+            <select id="incidentType">
+                <option value="fire">Fire</option>
+                <option value="earthquake">Earthquake</option>
+                <option value="flood">Flood</option>
+                <option value="typhoon">Typhoon</option>
+                <option value="medical">Medical</option>
+                <option value="security">Security</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" rows="3" placeholder="Describe the incident...">Test incident report from web interface</textarea>
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude:</label>
+            <input type="number" id="longitude" value="121.1564032" step="any">
+        </div>
+        <div class="form-group">
+            <label for="latitude">Latitude:</label>
+            <input type="number" id="latitude" value="14.0804096" step="any">
+        </div>
+        <div class="form-group">
+            <label for="priorityLevel">Priority Level:</label>
+            <select id="priorityLevel">
+                <option value="low">Low</option>
+                <option value="moderate" selected>Moderate</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="reporterSafeStatus">Reporter Safe Status:</label>
+            <select id="reporterSafeStatus">
+                <option value="safe" selected>Safe</option>
+                <option value="unsafe">Unsafe</option>
+                <option value="unknown">Unknown</option>
+            </select>
+        </div>
+        <button onclick="createIncident()" id="createBtn" disabled>Create Incident Report</button>
+        <button onclick="getCurrentLocation()">Get Current Location</button>
+        
+        <div id="incidentStatus"></div>
+    </div>
+
+    <div class="container">
+        <h2>API Responses</h2>
+        <div id="responseArea" class="response-area"></div>
+        <button onclick="clearResponses()">Clear Responses</button>
+    </div>
+
+    <script>
+        let authToken = null;
+        const baseUrl = 'http://localhost/api';
+
+        function logResponse(title, response, data) {
+            const responseArea = document.getElementById('responseArea');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `
+                <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                    <strong>${timestamp} - ${title}</strong><br>
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            responseArea.innerHTML = logEntry + responseArea.innerHTML;
+        }
+
+        function showStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showStatus('authStatus', 'Please enter both email and password', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/Logins.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                logResponse('Login', response, data);
+
+                if (data.success && data.token) {
+                    authToken = data.token;
+                    document.getElementById('logoutBtn').disabled = false;
+                    document.getElementById('sessionBtn').disabled = false;
+                    document.getElementById('createBtn').disabled = false;
+                    
+                    showStatus('authStatus', `Login successful! Welcome, ${data.user?.first_name || data.user?.name || 'User'}`, 'success');
+                    
+                    const tokenDisplay = document.getElementById('tokenDisplay');
+                    tokenDisplay.textContent = `Token: ${authToken.substring(0, 20)}...`;
+                    tokenDisplay.style.display = 'block';
+                } else {
+                    showStatus('authStatus', `Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Login Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function logout() {
+            if (!authToken) {
+                showStatus('authStatus', 'No active session to logout', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/Logout.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                logResponse('Logout', response, data);
+
+                if (data.success) {
+                    authToken = null;
+                    document.getElementById('logoutBtn').disabled = true;
+                    document.getElementById('sessionBtn').disabled = true;
+                    document.getElementById('createBtn').disabled = true;
+                    document.getElementById('tokenDisplay').style.display = 'none';
+                    showStatus('authStatus', 'Logout successful', 'success');
+                } else {
+                    showStatus('authStatus', `Logout failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Logout Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function checkSession() {
+            if (!authToken) {
+                showStatus('authStatus', 'No active session to check', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/SessionStatus.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                logResponse('Session Status', response, data);
+
+                if (data.success) {
+                    showStatus('authStatus', `Session valid. User: ${data.user?.name || data.user?.email}`, 'success');
+                } else {
+                    showStatus('authStatus', `Session invalid: ${data.message}`, 'error');
+                    // Clear token if session is invalid
+                    authToken = null;
+                    document.getElementById('logoutBtn').disabled = true;
+                    document.getElementById('sessionBtn').disabled = true;
+                    document.getElementById('createBtn').disabled = true;
+                    document.getElementById('tokenDisplay').style.display = 'none';
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Session Check Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function createIncident() {
+            if (!authToken) {
+                showStatus('incidentStatus', 'Please login first', 'error');
+                return;
+            }
+
+            const incidentData = {
+                incident_type: document.getElementById('incidentType').value,
+                description: document.getElementById('description').value,
+                longitude: parseFloat(document.getElementById('longitude').value),
+                latitude: parseFloat(document.getElementById('latitude').value),
+                priority_level: document.getElementById('priorityLevel').value,
+                reporter_safe_status: document.getElementById('reporterSafeStatus').value
+            };
+
+            // Validate required fields
+            if (!incidentData.description || !incidentData.longitude || !incidentData.latitude) {
+                showStatus('incidentStatus', 'Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/IncidentReport.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(incidentData)
+                });
+
+                const data = await response.json();
+                logResponse('Create Incident Report', response, data);
+
+                if (data.success) {
+                    showStatus('incidentStatus', `Incident report created successfully! ID: ${data.incident_id}`, 'success');
+                } else {
+                    showStatus('incidentStatus', `Failed to create incident report: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('incidentStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Create Incident Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        document.getElementById('latitude').value = position.coords.latitude;
+                        document.getElementById('longitude').value = position.coords.longitude;
+                        showStatus('incidentStatus', 'Location obtained successfully', 'success');
+                    },
+                    (error) => {
+                        showStatus('incidentStatus', `Error getting location: ${error.message}`, 'error');
+                    }
+                );
+            } else {
+                showStatus('incidentStatus', 'Geolocation is not supported by this browser', 'error');
+            }
+        }
+
+        function clearResponses() {
+            document.getElementById('responseArea').innerHTML = '';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('authStatus', 'Please login to start testing', 'info');
+            showStatus('incidentStatus', 'Login required to create incident reports', 'info');
+        });
+    </script>
+</body>
+</html> 

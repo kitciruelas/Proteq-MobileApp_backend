@@ -1,9 +1,5 @@
 <?php
-// Start session to access $_SESSION
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
 
 class IncidentReport {
@@ -19,12 +15,14 @@ class IncidentReport {
      * @param array $data
      * @return array
      */
-    public function createIncident($data) {
+    public function createIncident($data, $reportedBy = null) {
         try {
-            // Get user ID from session (assuming user is logged in)
-            $reported_by = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-            if (!$reported_by) {
-                throw new Exception("User not logged in.");
+            // Use provided reported_by or set to null for anonymous reports
+            $reported_by = $reportedBy;
+            
+            // If no reported_by provided, set to null (anonymous report)
+            if ($reported_by === null) {
+                $reported_by = null;
             }
             
             $query = "INSERT INTO incident_reports (
@@ -34,15 +32,21 @@ class IncidentReport {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
             
             $stmt = $this->conn->prepare($query);
+            
+            // Handle null reported_by properly by using a variable
+            $reported_by_value = $reported_by;
+            $priority_level = $data['priority_level'] ?? 'moderate';
+            $reporter_safe_status = $data['reporter_safe_status'] ?? 'unknown';
+            
             $stmt->bind_param(
-                "ssddiss", 
+                "ssddsss", 
                 $data['incident_type'],
                 $data['description'],
                 $data['longitude'],
                 $data['latitude'],
-                $reported_by,
-                $data['priority_level'] ?? 'moderate',
-                $data['reporter_safe_status'] ?? 'unknown'
+                $reported_by_value,
+                $priority_level,
+                $reporter_safe_status
             );
             
             if ($stmt->execute()) {
@@ -78,6 +82,13 @@ class IncidentReport {
                 gu.first_name as reporter_first_name,
                 gu.last_name as reporter_last_name,
                 gu.email as reporter_email,
+                gu.user_id as reporter_user_id,
+                gu.user_type as reporter_user_type,
+                CASE 
+                    WHEN ir.reported_by IS NULL THEN 'Anonymous'
+                    WHEN gu.first_name IS NOT NULL THEN CONCAT(gu.first_name, ' ', gu.last_name)
+                    ELSE CONCAT('User ID: ', ir.reported_by)
+                END as reporter_name,
                 s.name as assigned_staff_name,
                 s.role as assigned_staff_role
                 FROM incident_reports ir
@@ -156,6 +167,13 @@ class IncidentReport {
                 gu.first_name as reporter_first_name,
                 gu.last_name as reporter_last_name,
                 gu.email as reporter_email,
+                gu.user_id as reporter_user_id,
+                gu.user_type as reporter_user_type,
+                CASE 
+                    WHEN ir.reported_by IS NULL THEN 'Anonymous'
+                    WHEN gu.first_name IS NOT NULL THEN CONCAT(gu.first_name, ' ', gu.last_name)
+                    ELSE CONCAT('User ID: ', ir.reported_by)
+                END as reporter_name,
                 s.name as assigned_staff_name,
                 s.role as assigned_staff_role
                 FROM incident_reports ir

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #545b62;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .info {
+            border-color: #17a2b8;
+            background-color: #d1ecf1;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Session Debug Tool</h1>
+    <p>Use this tool to debug session issues with the Proteq API.</p>
+
+    <!-- Login Section -->
+    <div class="container">
+        <h2>🔐 Login</h2>
+        <div class="form-group">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" placeholder="Enter password">
+        </div>
+        <button onclick="login()">Login</button>
+        <button class="secondary" onclick="fillTestData()">Fill Test Data</button>
+        <div id="loginResponse" class="response"></div>
+    </div>
+
+    <!-- Session Status Section -->
+    <div class="container">
+        <h2>📊 Session Status</h2>
+        <button onclick="checkSessionStatus()">Check Session Status</button>
+        <button class="secondary" onclick="debugSession()">Debug Session Info</button>
+        <button class="secondary" onclick="createTestSession()">Create Test Session</button>
+        <div id="sessionResponse" class="response"></div>
+    </div>
+
+    <!-- Incident Report Section -->
+    <div class="container">
+        <h2>🚨 Incident Report Test</h2>
+        <button onclick="testGetIncidents()">Get All Incidents</button>
+        <button onclick="testCreateIncident()">Create Test Incident (Logged In)</button>
+        <button onclick="testCreateAnonymousIncident()">Create Anonymous Incident</button>
+        <button class="secondary" onclick="testGetIncidentById()">Get Incident by ID</button>
+        <div id="incidentResponse" class="response"></div>
+    </div>
+
+    <!-- Logout Section -->
+    <div class="container">
+        <h2>🚪 Logout</h2>
+        <button onclick="logout()">Logout</button>
+        <div id="logoutResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost/api';
+
+        // Helper function to make API requests
+        async function makeRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include' // Important for cookies
+            };
+
+            if (data && (method === 'POST' || method === 'PUT')) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                
+                return {
+                    status: response.status,
+                    data: result,
+                    headers: Object.fromEntries(response.headers.entries())
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    data: { success: false, message: 'Network error: ' + error.message },
+                    headers: {}
+                };
+            }
+        }
+
+        // Helper function to display response
+        function displayResponse(elementId, response, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `response ${type}`;
+            element.textContent = JSON.stringify(response, null, 2);
+        }
+
+        // Login function
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                displayResponse('loginResponse', { error: 'Email and password are required' }, 'error');
+                return;
+            }
+
+            const response = await makeRequest('/controller/User/Logins.php', 'POST', {
+                email: email,
+                password: password
+            });
+
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('loginResponse', response, type);
+        }
+
+        // Check session status
+        async function checkSessionStatus() {
+            const response = await makeRequest('/controller/User/SessionStatus.php');
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('sessionResponse', response, type);
+        }
+
+        // Debug session info
+        async function debugSession() {
+            const response = await makeRequest('/controller/User/SessionDebug.php');
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('sessionResponse', response, type);
+        }
+
+        // Create test session
+        async function createTestSession() {
+            const response = await makeRequest('/controller/User/SessionDebug.php', 'POST', {
+                type: 'user'
+            });
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('sessionResponse', response, type);
+        }
+
+        // Test get incidents
+        async function testGetIncidents() {
+            const response = await makeRequest('/controller/IncidentReport.php');
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('incidentResponse', response, type);
+        }
+
+        // Test create incident
+        async function testCreateIncident() {
+            const testData = {
+                incident_type: 'medical',
+                description: 'Test incident for debugging',
+                longitude: 120.9842,
+                latitude: 14.5995,
+                priority_level: 'moderate',
+                reporter_safe_status: 'safe'
+            };
+
+            const response = await makeRequest('/controller/IncidentReport.php', 'POST', testData);
+            const type = response.status === 201 ? 'success' : 'error';
+            displayResponse('incidentResponse', response, type);
+        }
+
+        // Test create incident without login (anonymous)
+        async function testCreateAnonymousIncident() {
+            const testData = {
+                incident_type: 'security',
+                description: 'Anonymous incident report',
+                longitude: 120.9842,
+                latitude: 14.5995,
+                priority_level: 'high',
+                reporter_safe_status: 'safe'
+            };
+
+            const response = await makeRequest('/controller/IncidentReport.php', 'POST', testData);
+            const type = response.status === 201 ? 'success' : 'error';
+            displayResponse('incidentResponse', response, type);
+        }
+
+        // Test get incident by ID
+        async function testGetIncidentById() {
+            const response = await makeRequest('/controller/IncidentReport.php?action=get_by_id&id=1');
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('incidentResponse', response, type);
+        }
+
+        // Logout function
+        async function logout() {
+            const response = await makeRequest('/controller/User/Logout.php', 'POST');
+            const type = response.status === 200 ? 'success' : 'error';
+            displayResponse('logoutResponse', response, type);
+        }
+
+        // Fill test data
+        function fillTestData() {
+            document.getElementById('loginEmail').value = 'test@example.com';
+            document.getElementById('loginPassword').value = 'password123';
+        }
+
+        // Auto-check session status on page load
+        window.onload = function() {
+            checkSessionStatus();
+        };
+    </script>
+</body>
+</html> 

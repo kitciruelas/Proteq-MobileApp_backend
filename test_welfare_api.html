@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welfare Check API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .success {
+            color: #28a745;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #17a2b8;
+            background-color: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .token-display {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .welfare-list {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .welfare-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .welfare-item h4 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+        .status-safe {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-unsafe {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welfare Check API Test</h1>
+    
+    <div class="container">
+        <h2>Step 1: Authentication</h2>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="test@example.com" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="password123" placeholder="Enter your password">
+        </div>
+        <button onclick="login()">Login</button>
+        <button onclick="logout()" id="logoutBtn" disabled>Logout</button>
+        <button onclick="checkSession()" id="sessionBtn" disabled>Check Session</button>
+        
+        <div id="authStatus"></div>
+        <div id="tokenDisplay" class="token-display" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Step 2: Create Welfare Check</h2>
+        <div class="grid-3">
+            <div class="form-group">
+                <label for="user_id">User ID:</label>
+                <input type="number" id="user_id" value="1" placeholder="Enter user ID">
+            </div>
+            <div class="form-group">
+                <label for="emergency_id">Emergency ID:</label>
+                <input type="number" id="emergency_id" value="1" placeholder="Enter emergency ID">
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status">
+                    <option value="safe" selected>Safe</option>
+                    <option value="unsafe">Unsafe</option>
+                    <option value="pending">Pending</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="evacuated">Evacuated</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="remarks">Remarks:</label>
+            <textarea id="remarks" rows="3" placeholder="Enter welfare check remarks...">Welfare check completed - user is safe and accounted for</textarea>
+        </div>
+        <button onclick="createWelfareCheck()" id="createBtn" disabled class="btn-success">Create Welfare Check</button>
+        
+        <div id="createStatus"></div>
+    </div>
+
+    <div class="container">
+        <h2>Step 3: Manage Welfare Checks</h2>
+        <div class="grid-2">
+            <div>
+                <h3>Get Welfare Checks</h3>
+                <div class="form-group">
+                    <label for="getUserId">Filter by User ID (optional):</label>
+                    <input type="number" id="getUserId" placeholder="Leave empty for all">
+                </div>
+                <div class="form-group">
+                    <label for="getEmergencyId">Filter by Emergency ID (optional):</label>
+                    <input type="number" id="getEmergencyId" placeholder="Leave empty for all">
+                </div>
+                <button onclick="getWelfareChecks()" id="getBtn" disabled>Get Welfare Checks</button>
+            </div>
+            <div>
+                <h3>Update Welfare Check</h3>
+                <div class="form-group">
+                    <label for="updateWelfareId">Welfare Check ID:</label>
+                    <input type="number" id="updateWelfareId" placeholder="Enter welfare check ID">
+                </div>
+                <div class="form-group">
+                    <label for="updateStatus">New Status:</label>
+                    <select id="updateStatus">
+                        <option value="safe">Safe</option>
+                        <option value="unsafe">Unsafe</option>
+                        <option value="pending">Pending</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="evacuated">Evacuated</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateRemarks">New Remarks:</label>
+                    <textarea id="updateRemarks" rows="2" placeholder="Enter new remarks..."></textarea>
+                </div>
+                <button onclick="updateWelfareCheck()" id="updateBtn" disabled class="btn-warning">Update Welfare Check</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="deleteWelfareId">Delete Welfare Check ID:</label>
+            <input type="number" id="deleteWelfareId" placeholder="Enter welfare check ID to delete">
+            <button onclick="deleteWelfareCheck()" id="deleteBtn" disabled class="btn-danger">Delete Welfare Check</button>
+        </div>
+        
+        <div id="manageStatus"></div>
+    </div>
+
+    <div class="container">
+        <h2>Welfare Checks List</h2>
+        <div id="welfareList" class="welfare-list">
+            <div class="info">No welfare checks loaded. Use "Get Welfare Checks" to load data.</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>API Responses</h2>
+        <div id="responseArea" class="response-area"></div>
+        <button onclick="clearResponses()">Clear Responses</button>
+    </div>
+
+    <script>
+        let authToken = null;
+        const baseUrl = 'http://localhost/api';
+
+        function logResponse(title, response, data) {
+            const responseArea = document.getElementById('responseArea');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `
+                <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                    <strong>${timestamp} - ${title}</strong><br>
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            responseArea.innerHTML = logEntry + responseArea.innerHTML;
+        }
+
+        function showStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        function displayWelfareChecks(welfareChecks) {
+            const welfareList = document.getElementById('welfareList');
+            
+            if (!welfareChecks || welfareChecks.length === 0) {
+                welfareList.innerHTML = '<div class="info">No welfare checks found.</div>';
+                return;
+            }
+
+            let html = '';
+            welfareChecks.forEach(check => {
+                const statusClass = `status-${check.status}`;
+                html += `
+                    <div class="welfare-item">
+                        <h4>Welfare Check #${check.welfare_id}</h4>
+                        <div><strong>User ID:</strong> ${check.user_id}</div>
+                        <div><strong>Emergency ID:</strong> ${check.emergency_id}</div>
+                        <div><strong>Status:</strong> <span class="${statusClass}">${check.status}</span></div>
+                        <div><strong>Remarks:</strong> ${check.remarks || 'No remarks'}</div>
+                        <div><strong>Created:</strong> ${check.created_at || 'N/A'}</div>
+                    </div>
+                `;
+            });
+            welfareList.innerHTML = html;
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showStatus('authStatus', 'Please enter both email and password', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/Logins.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                logResponse('Login', response, data);
+
+                if (data.success && data.token) {
+                    authToken = data.token;
+                    document.getElementById('logoutBtn').disabled = false;
+                    document.getElementById('sessionBtn').disabled = false;
+                    document.getElementById('createBtn').disabled = false;
+                    document.getElementById('getBtn').disabled = false;
+                    document.getElementById('updateBtn').disabled = false;
+                    document.getElementById('deleteBtn').disabled = false;
+                    
+                    showStatus('authStatus', `Login successful! Welcome, ${data.user?.first_name || data.user?.name || 'User'}`, 'success');
+                    
+                    const tokenDisplay = document.getElementById('tokenDisplay');
+                    tokenDisplay.textContent = `Token: ${authToken.substring(0, 20)}...`;
+                    tokenDisplay.style.display = 'block';
+                } else {
+                    showStatus('authStatus', `Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Login Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function logout() {
+            if (!authToken) {
+                showStatus('authStatus', 'No active session to logout', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/Logout.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                logResponse('Logout', response, data);
+
+                if (data.success) {
+                    authToken = null;
+                    document.getElementById('logoutBtn').disabled = true;
+                    document.getElementById('sessionBtn').disabled = true;
+                    document.getElementById('createBtn').disabled = true;
+                    document.getElementById('getBtn').disabled = true;
+                    document.getElementById('updateBtn').disabled = true;
+                    document.getElementById('deleteBtn').disabled = true;
+                    document.getElementById('tokenDisplay').style.display = 'none';
+                    showStatus('authStatus', 'Logout successful', 'success');
+                } else {
+                    showStatus('authStatus', `Logout failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Logout Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function checkSession() {
+            if (!authToken) {
+                showStatus('authStatus', 'No active session to check', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/User/SessionStatus.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                logResponse('Session Status', response, data);
+
+                if (data.success) {
+                    showStatus('authStatus', `Session valid. User: ${data.user?.name || data.user?.email}`, 'success');
+                } else {
+                    showStatus('authStatus', `Session invalid: ${data.message}`, 'error');
+                    // Clear token if session is invalid
+                    authToken = null;
+                    document.getElementById('logoutBtn').disabled = true;
+                    document.getElementById('sessionBtn').disabled = true;
+                    document.getElementById('createBtn').disabled = true;
+                    document.getElementById('getBtn').disabled = true;
+                    document.getElementById('updateBtn').disabled = true;
+                    document.getElementById('deleteBtn').disabled = true;
+                    document.getElementById('tokenDisplay').style.display = 'none';
+                }
+            } catch (error) {
+                showStatus('authStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Session Check Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function createWelfareCheck() {
+            if (!authToken) {
+                showStatus('createStatus', 'Please login first', 'error');
+                return;
+            }
+
+            const welfareData = {
+                user_id: parseInt(document.getElementById('user_id').value),
+                emergency_id: parseInt(document.getElementById('emergency_id').value),
+                status: document.getElementById('status').value,
+                remarks: document.getElementById('remarks').value
+            };
+
+            // Validate required fields
+            if (!welfareData.user_id || !welfareData.emergency_id || !welfareData.status) {
+                showStatus('createStatus', 'Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/WelfareCheck.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(welfareData)
+                });
+
+                const data = await response.json();
+                logResponse('Create Welfare Check', response, data);
+
+                if (data.success) {
+                    showStatus('createStatus', 'Welfare check created successfully!', 'success');
+                    // Clear form
+                    document.getElementById('remarks').value = '';
+                } else {
+                    showStatus('createStatus', `Failed to create welfare check: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('createStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Create Welfare Check Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function getWelfareChecks() {
+            if (!authToken) {
+                showStatus('manageStatus', 'Please login first', 'error');
+                return;
+            }
+
+            const userId = document.getElementById('getUserId').value;
+            const emergencyId = document.getElementById('getEmergencyId').value;
+            
+            let url = `${baseUrl}/controller/WelfareCheck.php`;
+            const params = new URLSearchParams();
+            
+            if (userId) params.append('user_id', userId);
+            if (emergencyId) params.append('emergency_id', emergencyId);
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                logResponse('Get Welfare Checks', response, data);
+
+                if (data.success) {
+                    displayWelfareChecks(data.data);
+                    showStatus('manageStatus', `Retrieved ${data.data.length} welfare check(s)`, 'success');
+                } else {
+                    showStatus('manageStatus', `Failed to get welfare checks: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('manageStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Get Welfare Checks Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function updateWelfareCheck() {
+            if (!authToken) {
+                showStatus('manageStatus', 'Please login first', 'error');
+                return;
+            }
+
+            const welfareId = document.getElementById('updateWelfareId').value;
+            const status = document.getElementById('updateStatus').value;
+            const remarks = document.getElementById('updateRemarks').value;
+
+            if (!welfareId) {
+                showStatus('manageStatus', 'Please enter welfare check ID', 'error');
+                return;
+            }
+
+            const updateData = {
+                welfare_id: parseInt(welfareId),
+                status: status,
+                remarks: remarks
+            };
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/WelfareCheck.php`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const data = await response.json();
+                logResponse('Update Welfare Check', response, data);
+
+                if (data.success) {
+                    showStatus('manageStatus', 'Welfare check updated successfully!', 'success');
+                    // Clear form
+                    document.getElementById('updateWelfareId').value = '';
+                    document.getElementById('updateRemarks').value = '';
+                } else {
+                    showStatus('manageStatus', `Failed to update welfare check: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('manageStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Update Welfare Check Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        async function deleteWelfareCheck() {
+            if (!authToken) {
+                showStatus('manageStatus', 'Please login first', 'error');
+                return;
+            }
+
+            const welfareId = document.getElementById('deleteWelfareId').value;
+
+            if (!welfareId) {
+                showStatus('manageStatus', 'Please enter welfare check ID', 'error');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete welfare check #${welfareId}?`)) {
+                return;
+            }
+
+            const deleteData = {
+                welfare_id: parseInt(welfareId)
+            };
+
+            try {
+                const response = await fetch(`${baseUrl}/controller/WelfareCheck.php`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(deleteData)
+                });
+
+                const data = await response.json();
+                logResponse('Delete Welfare Check', response, data);
+
+                if (data.success) {
+                    showStatus('manageStatus', 'Welfare check deleted successfully!', 'success');
+                    // Clear form
+                    document.getElementById('deleteWelfareId').value = '';
+                } else {
+                    showStatus('manageStatus', `Failed to delete welfare check: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showStatus('manageStatus', `Network error: ${error.message}`, 'error');
+                logResponse('Delete Welfare Check Error', { status: 'ERROR' }, { error: error.message });
+            }
+        }
+
+        function clearResponses() {
+            document.getElementById('responseArea').innerHTML = '';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('authStatus', 'Please login to start testing', 'info');
+            showStatus('createStatus', 'Login required to create welfare checks', 'info');
+            showStatus('manageStatus', 'Login required to manage welfare checks', 'info');
+        });
+    </script>
+</body>
+</html> 

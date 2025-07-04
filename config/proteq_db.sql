@@ -198,7 +198,7 @@ CREATE TABLE `incident_reports` (
   `date_reported` datetime NOT NULL DEFAULT current_timestamp(),
   `status` enum('pending','in_progress','resolved','closed') NOT NULL DEFAULT 'pending',
   `assigned_to` int(11) DEFAULT NULL,
-  `reported_by` int(11) NOT NULL,
+  `reported_by` int(11) DEFAULT NULL,
   `validation_status` enum('unvalidated','validated','rejected') NOT NULL DEFAULT 'unvalidated',
   `validation_notes` text DEFAULT NULL,
   `priority_level` enum('low','moderate','high','critical') NOT NULL DEFAULT 'moderate',
