@@ -1426,3 +1426,57 @@ Array
         )
 
 )
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 2
+            [first_name] => Keith
+            [last_name] => CIruelas
+            [user_type] => FACULTY
+            [email] => 22-33950@g.batstate-u.edu.ph
+            [department] => cics
+            [college] => IT
+            [status] => 1
+        )
+
+)

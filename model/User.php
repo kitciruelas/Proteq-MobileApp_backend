@@ -262,5 +262,54 @@ class User {
             ];
         }
     }
+
+    public function userExistsByEmail($email) {
+        $query = "SELECT user_id FROM general_users WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->num_rows > 0;
+    }
+
+    /**
+     * Reset password by email (for forgot password flow)
+     * @param string $email
+     * @param string $newPassword
+     * @return array
+     */
+    public function resetPasswordByEmail($email, $newPassword) {
+        try {
+            // Hash new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            // Update password
+            $updateQuery = "UPDATE general_users SET password = ? WHERE email = ?";
+            $updateStmt = $this->conn->prepare($updateQuery);
+            $updateStmt->bind_param("ss", $hashedPassword, $email);
+            if ($updateStmt->execute()) {
+                if ($updateStmt->affected_rows > 0) {
+                    return [
+                        'success' => true,
+                        'message' => 'Password reset successfully'
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => 'No user found with that email'
+                    ];
+                }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Password reset failed: ' . $this->conn->error
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Password reset error: ' . $e->getMessage()
+            ];
+        }
+    }
 }
 ?>
