@@ -156,4 +156,58 @@ class Staff {
             ];
         }
     }
+
+    /**
+     * Change password for staff
+     * @param int $staffId
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @return array
+     */
+    public function changePassword($staffId, $currentPassword, $newPassword) {
+        try {
+            // Get current password
+            $query = "SELECT password FROM staff WHERE staff_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("i", $staffId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows === 0) {
+                return [
+                    'success' => false,
+                    'message' => 'Staff not found'
+                ];
+            }
+            $staff = $result->fetch_assoc();
+            // Verify current password
+            if (!password_verify($currentPassword, $staff['password'])) {
+                return [
+                    'success' => false,
+                    'message' => 'Current password is incorrect'
+                ];
+            }
+            // Hash new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            // Update password
+            $updateQuery = "UPDATE staff SET password = ? WHERE staff_id = ?";
+            $updateStmt = $this->conn->prepare($updateQuery);
+            $updateStmt->bind_param("si", $hashedPassword, $staffId);
+            if ($updateStmt->execute()) {
+                return [
+                    'success' => true,
+                    'message' => 'Password changed successfully'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Password change failed: ' . $this->conn->error
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Password change error: ' . $e->getMessage()
+            ];
+        }
+    }
 } 

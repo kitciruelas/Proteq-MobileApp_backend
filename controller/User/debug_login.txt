@@ -1480,3 +1480,2057 @@ Array
         )
 
 )
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 18
+            [first_name] => kit
+            [last_name] => ciruelas
+            [user_type] => STUDENT
+            [email] => kitciruelas@gmail.com
+            [department] => ICT
+            [college] => BSIT
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 2
+            [name] => BossMalupitons
+            [email] => boss@gmail.com
+            [role] => nurse
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-13 13:12:13
+            [updated_at] => 2025-06-27 11:51:52
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 19
+            [first_name] => ee
+            [last_name] => ee
+            [user_type] => FACULTY
+            [email] => e@gmail.com
+            [department] => Engineering
+            [college] => BSCpE
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith Andrei
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith Drei
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith DreiA
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-06-12 19:16:00
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit Kat
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-07-16 09:41:17
+        )
+
+)
+Array
+(
+    [success] => 
+    [message] => Invalid email or password
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [staff] => Array
+        (
+            [staff_id] => 1
+            [name] => Kit Kat
+            [email] => kit@gmail.com
+            [role] => firefighter
+            [availability] => available
+            [status] => 1
+            [created_at] => 2025-06-10 10:27:50
+            [updated_at] => 2025-07-16 09:56:51
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith DreiA
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)
+Array
+(
+    [success] => 1
+    [message] => Login successful
+    [user] => Array
+        (
+            [user_id] => 6
+            [first_name] => Keith DreiA
+            [last_name] => Ciruelas
+            [user_type] => STUDENT
+            [email] => kit@gmail.com
+            [department] => CAS
+            [college] => Bachelor of Science in Psychology
+            [status] => 1
+        )
+
+)

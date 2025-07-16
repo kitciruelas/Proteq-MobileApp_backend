@@ -1,7 +1,7 @@
 <?php
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowed_origins = [
-    'http://localhost:59602',
+    'http://localhost:59221',
 ];
 
 if (in_array($origin, $allowed_origins)) {

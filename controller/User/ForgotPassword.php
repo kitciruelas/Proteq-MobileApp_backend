@@ -45,14 +45,12 @@ $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 $expires = date('Y-m-d H:i:s', time() + 600); // 10 minutes from now
 
 // Send OTP email
-$alertData = [
-    'recipient_name' => $email,
-    'alert_severity' => 'info',
-    'alert_type' => 'Password Reset',
-    'title' => 'Password Reset OTP',
-    'description' => "Your OTP for password reset is: $otp\nThis code will expire in 10 minutes.",
+$otpData = [
+    'recipient_name' => $email, // Use real name if available
+    'otp_code' => $otp,
+    'expiration_minutes' => 10
 ];
-$sent = sendAlertEmail($email, $alertData);
+$sent = sendOtpEmail($email, $otpData);
 
 if ($sent) {
     // For demo/testing, include the OTP in the response

@@ -288,3 +288,99 @@ function sendAlertEmail($userEmail, $alertData) {
         return false;
     }
 }
+
+function sendOtpEmail($userEmail, $otpData) {
+    // If $userEmail is an array, send to multiple recipients
+    if (is_array($userEmail)) {
+        $results = [];
+        foreach ($userEmail as $email) {
+            try {
+                $results[$email] = sendOtpEmail($email, $otpData);
+                usleep(100000); // 100ms delay
+            } catch (Exception $e) {
+                $results[$email] = false;
+                error_log("Failed to send OTP email to " . $email . ": " . $e->getMessage());
+            }
+        }
+        return $results;
+    }
+
+    $mail = new PHPMailer(true);
+    try {
+        // Enable debug output
+        $mail->SMTPDebug = 0; // Set to 0 for production, >0 for debugging
+        $mail->Debugoutput = function($str, $level) {
+            error_log("PHPMailer Debug: $str");
+        };
+
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'fking6915@gmail.com';
+        $mail->Password = 'azqa bnkd mbop dxgm';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->CharSet = 'UTF-8';
+        $mail->SMTPKeepAlive = true;
+        $mail->Timeout = 60;
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+
+        if (!$mail->smtpConnect()) {
+            throw new Exception('Failed to connect to SMTP server');
+        }
+
+        // Set sender and recipient
+        $mail->setFrom('alerts.proteq@gmail.com', 'Proteq Verification');
+        $mail->addAddress($userEmail, $otpData['recipient_name']);
+        $mail->addReplyTo('alerts.proteq@gmail.com', 'Proteq Verification');
+        $mail->addCustomHeader('X-Mailer', 'Proteq OTP System');
+        $mail->addCustomHeader('Precedence', 'bulk');
+
+        // Subject
+        $mail->Subject = 'Your Proteq OTP Code';
+
+        // Expiration info
+        $expiration = isset($otpData['expiration_minutes']) ? $otpData['expiration_minutes'] : 10;
+
+        // HTML body
+        $htmlBody = "
+            <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;'>
+                <h2 style='color: #007bff; margin-top: 0;'>Proteq Verification Code</h2>
+                <p style='font-size: 16px; color: #333;'>Dear " . htmlspecialchars($otpData['recipient_name']) . ",</p>
+                <p style='font-size: 16px; color: #333;'>Your One-Time Password (OTP) is:</p>
+                <div style='font-size: 32px; font-weight: bold; color: #007bff; letter-spacing: 4px; margin: 20px 0;'>" . htmlspecialchars($otpData['otp_code']) . "</div>
+                <p style='font-size: 15px; color: #333;'>Please enter this code to complete your verification. This code will expire in <strong>" . intval($expiration) . " minutes</strong>.</p>
+                <p style='font-size: 14px; color: #888;'>If you did not request this code, please ignore this email.</p>
+                <div style='margin-top: 30px; font-size: 13px; color: #aaa;'>This is an automated message from Proteq. Do not reply to this email.</div>
+            </div>
+        ";
+
+        // Plain text body
+        $plainBody = "Proteq Verification Code\n\n" .
+                     "Dear " . $otpData['recipient_name'] . ",\n" .
+                     "Your One-Time Password (OTP) is: " . $otpData['otp_code'] . "\n" .
+                     "Please enter this code to complete your verification. This code will expire in " . intval($expiration) . " minutes.\n\n" .
+                     "If you did not request this code, please ignore this email.\n\n" .
+                     "This is an automated message from Proteq. Do not reply to this email.";
+
+        $mail->Body = $htmlBody;
+        $mail->AltBody = $plainBody;
+
+        error_log("Attempting to send OTP email to: " . $userEmail);
+        $mail->send();
+        error_log("OTP email sent successfully to: " . $userEmail);
+        return true;
+    } catch (Exception $e) {
+        error_log("OTP email sending failed to " . $userEmail . ": " . $e->getMessage());
+        error_log("Full error details: " . $e->getMessage());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        return false;
+    }
+}

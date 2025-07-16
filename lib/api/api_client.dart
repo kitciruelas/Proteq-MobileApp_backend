@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 class ApiClient {
-  static const String baseUrl = 'http://localhost/api';
+  static const String baseUrl = 'http://192.168.1.12/api';
   static String? _authToken;
 
   // Set authentication token
