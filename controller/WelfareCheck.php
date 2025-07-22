@@ -26,6 +26,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
+        // Check if user has already responded
+        if (isset($_GET['check_responded']) && $_GET['check_responded'] == '1' && isset($_GET['emergency_id']) && isset($_GET['user_id'])) {
+            $has_responded = $model->hasUserResponded($_GET['emergency_id'], $_GET['user_id']);
+            echo json_encode(['success' => true, 'has_responded' => $has_responded]);
+            break;
+        }
+        // Get the user's welfare check response
+        if (isset($_GET['get_response']) && $_GET['get_response'] == '1' && isset($_GET['emergency_id']) && isset($_GET['user_id'])) {
+            $user_response = $model->getUserResponse($_GET['emergency_id'], $_GET['user_id']);
+            echo json_encode(['success' => true, 'response' => $user_response]);
+            break;
+        }
         if (isset($_GET['user_id'])) {
             $result = $model->getByUser($_GET['user_id']);
         } elseif (isset($_GET['emergency_id'])) {

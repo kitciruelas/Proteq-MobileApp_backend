@@ -233,6 +233,62 @@ class StaffIncidentsController {
             ]);
         }
     }
+
+    /**
+     * Get incident by incident_id (required)
+     */
+    public function getIncidentByIdFromRequest() {
+        // Get token from Authorization header
+        $token = SessionManager::getTokenFromHeader();
+        
+        // Check authentication
+        if (!$token || !SessionManager::isLoggedIn($token)) {
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Authentication required. Please login to view incident.'
+            ]);
+            return;
+        }
+        
+        // Check if session has expired
+        if (SessionManager::isSessionExpired($token)) {
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Session expired. Please login again.'
+            ]);
+            return;
+        }
+        
+        // Get incident_id from query parameters
+        if (!isset($_GET['incident_id']) || !is_numeric($_GET['incident_id'])) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => 'incident_id parameter is required and must be numeric.'
+            ]);
+            return;
+        }
+        $incidentId = intval($_GET['incident_id']);
+        
+        // Fetch incident by ID
+        $result = $this->incidentModel->getIncidentById($incidentId);
+
+        // Ensure incident_id is present in the response
+        if ($result['success'] && isset($result['data']) && (!isset($result['data']['incident_id']) || $result['data']['incident_id'] === null)) {
+            $result['success'] = false;
+            $result['message'] = 'Incident found but missing incident_id.';
+        }
+        
+        if ($result['success']) {
+            http_response_code(200);
+        } else {
+            http_response_code(404);
+        }
+        
+        echo json_encode($result);
+    }
 }
 
 // Route the request to the appropriate method
@@ -240,7 +296,7 @@ $controller = new StaffIncidentsController();
 
 // Route based on HTTP method and action
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $controller->getAssignedIncidents();
+    $controller->getIncidentByIdFromRequest();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_GET['action']) && $_GET['action'] === 'location') {
         $controller->updateLocation();
@@ -255,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     http_response_code(405);
     echo json_encode([
         'success' => false,
-        'message' => 'Method not allowed. Use GET for assigned incidents or POST with ?action=location for updating location.'
+        'message' => 'Method not allowed. Use GET with ?incident_id= for incident details or POST with ?action=location for updating location.'
     ]);
 }
 ?> 

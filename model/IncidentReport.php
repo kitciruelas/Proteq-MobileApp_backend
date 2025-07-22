@@ -19,27 +19,32 @@ class IncidentReport {
         try {
             // Use provided reported_by or set to null for anonymous reports
             $reported_by = $reportedBy;
-            
-            // If no reported_by provided, set to null (anonymous report)
             if ($reported_by === null) {
                 $reported_by = null;
             }
-            
+
+            // Map incident types to staff roles
+            $incident_role_map = [
+                'medical' => ['nurse', 'paramedic'],
+                'fire' => ['firefighter'],
+                'security' => ['security'],
+                'other' => ['others']
+            ];
+            $incident_key = strtolower($data['incident_type']);
+            $required_roles = isset($incident_role_map[$incident_key]) ? $incident_role_map[$incident_key] : ['others'];
+
             $query = "INSERT INTO incident_reports (
                 incident_type, description, longitude, latitude, 
                 reported_by, priority_level, reporter_safe_status, 
-                created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
-            
+                status, validation_status, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', 'unvalidated', NOW(), NOW())";
+
             $stmt = $this->conn->prepare($query);
-            
-            // Handle null reported_by properly by using a variable
             $reported_by_value = $reported_by;
             $priority_level = $data['priority_level'] ?? 'moderate';
             $reporter_safe_status = $data['reporter_safe_status'] ?? 'unknown';
-            
             $stmt->bind_param(
-                "ssddsss", 
+                "ssddsss",
                 $data['incident_type'],
                 $data['description'],
                 $data['longitude'],
@@ -48,12 +53,36 @@ class IncidentReport {
                 $priority_level,
                 $reporter_safe_status
             );
-            
+
             if ($stmt->execute()) {
+                $incident_id = $this->conn->insert_id;
+                // Find available staff with required role
+                $role_placeholders = implode(',', array_fill(0, count($required_roles), '?'));
+                $staff_query = "SELECT staff_id FROM staff WHERE availability = 'available' AND role IN ($role_placeholders) LIMIT 1";
+                $staff_stmt = $this->conn->prepare($staff_query);
+                $staff_stmt->bind_param(str_repeat('s', count($required_roles)), ...$required_roles);
+                $staff_stmt->execute();
+                $staff_result = $staff_stmt->get_result();
+                if ($staff_result && $staff_result->num_rows > 0) {
+                    $staff_row = $staff_result->fetch_assoc();
+                    $staffId = $staff_row['staff_id'];
+                    // Assign the incident to the staff and set status to in_progress
+                    $assignQuery = "UPDATE incident_reports SET assigned_to = ?, status = 'in_progress' WHERE incident_id = ?";
+                    $assignStmt = $this->conn->prepare($assignQuery);
+                    $assignStmt->bind_param("ii", $staffId, $incident_id);
+                    if (!$assignStmt->execute()) {
+                        error_log('Assignment error: ' . $assignStmt->error);
+                        return [
+                            'success' => false,
+                            'message' => 'Incident created but failed to assign staff: ' . $assignStmt->error,
+                            'incident_id' => $incident_id
+                        ];
+                    }
+                }
                 return [
                     'success' => true,
                     'message' => 'Incident report created successfully',
-                    'incident_id' => $this->conn->insert_id
+                    'incident_id' => $incident_id
                 ];
             } else {
                 return [
@@ -61,7 +90,6 @@ class IncidentReport {
                     'message' => 'Failed to create incident report: ' . $this->conn->error
                 ];
             }
-            
         } catch (Exception $e) {
             return [
                 'success' => false,
@@ -78,7 +106,21 @@ class IncidentReport {
     public function getAllIncidents($filters = []) {
         try {
             $query = "SELECT 
-                ir.*,
+                ir.incident_id,
+                ir.incident_type,
+                ir.description,
+                ir.longitude,
+                ir.latitude,
+                ir.date_reported,
+                ir.status,
+                ir.assigned_to,
+                ir.reported_by,
+                ir.validation_status,
+                ir.validation_notes,
+                ir.priority_level,
+                ir.reporter_safe_status,
+                ir.created_at,
+                ir.updated_at,
                 gu.first_name as reporter_first_name,
                 gu.last_name as reporter_last_name,
                 gu.email as reporter_email,
@@ -137,6 +179,10 @@ class IncidentReport {
             
             $incidents = [];
             while ($row = $result->fetch_assoc()) {
+                    // Ensure incident_id is present
+                if (!isset($row['incident_id'])) {
+                    $row['incident_id'] = null;
+                }
                 $incidents[] = $row;
             }
             
@@ -163,7 +209,21 @@ class IncidentReport {
     public function getIncidentById($incidentId) {
         try {
             $query = "SELECT 
-                ir.*,
+                ir.incident_id,
+                ir.incident_type,
+                ir.description,
+                ir.longitude,
+                ir.latitude,
+                ir.date_reported,
+                ir.status,
+                ir.assigned_to,
+                ir.reported_by,
+                ir.validation_status,
+                ir.validation_notes,
+                ir.priority_level,
+                ir.reporter_safe_status,
+                ir.created_at,
+                ir.updated_at,
                 gu.first_name as reporter_first_name,
                 gu.last_name as reporter_last_name,
                 gu.email as reporter_email,
@@ -187,10 +247,14 @@ class IncidentReport {
             $result = $stmt->get_result();
             
             if ($result->num_rows > 0) {
+                $data = $result->fetch_assoc();
+                if (!isset($data['incident_id'])) {
+                    $data['incident_id'] = null;
+                }
                 return [
                     'success' => true,
                     'message' => 'Incident retrieved successfully',
-                    'data' => $result->fetch_assoc()
+                    'data' => $data
                 ];
             } else {
                 return [
@@ -214,10 +278,17 @@ class IncidentReport {
      * @return array
      */
     public function updateIncident($incidentId, $data) {
+        // Check for valid incidentId
+        if (empty($incidentId) || !is_numeric($incidentId)) {
+            return [
+                'success' => false,
+                'message' => 'Incident ID is missing. Cannot update incident.'
+            ];
+        }
         try {
             $allowedFields = [
                 'incident_type', 'description', 'longitude', 'latitude',
-                'priority_level', 'reporter_safe_status'
+                'priority_level', 'reporter_safe_status', 'status', 'validation_status'
             ];
             
             $updates = [];
@@ -449,7 +520,21 @@ class IncidentReport {
     public function getIncidentsByUser($userId) {
         try {
             $query = "SELECT 
-                ir.*,
+                ir.incident_id,
+                ir.incident_type,
+                ir.description,
+                ir.longitude,
+                ir.latitude,
+                ir.date_reported,
+                ir.status,
+                ir.assigned_to,
+                ir.reported_by,
+                ir.validation_status,
+                ir.validation_notes,
+                ir.priority_level,
+                ir.reporter_safe_status,
+                ir.created_at,
+                ir.updated_at,
                 s.name as assigned_staff_name,
                 s.role as assigned_staff_role
                 FROM incident_reports ir
@@ -464,6 +549,9 @@ class IncidentReport {
             
             $incidents = [];
             while ($row = $result->fetch_assoc()) {
+                if (!isset($row['incident_id'])) {
+                    $row['incident_id'] = null;
+                }
                 $incidents[] = $row;
             }
             
@@ -566,41 +654,37 @@ class IncidentReport {
             
             // Build the main query with distance calculation
             $query = "SELECT 
-                ir.incident_id,
+                ir.incident_id as incident_id,
                 ir.incident_type,
                 ir.description,
                 ir.longitude,
                 ir.latitude,
                 ir.date_reported,
-                ir.priority_level,
-                ir.reporter_safe_status,
+                ir.status,
+                ir.assigned_to,
+                ir.reported_by,
                 ir.validation_status,
                 ir.validation_notes,
-                ir.status,
+                ir.priority_level,
+                ir.reporter_safe_status,
                 ir.created_at,
                 ir.updated_at,
                 gu.first_name as reporter_first_name,
                 gu.last_name as reporter_last_name,
                 gu.email as reporter_email,
+                gu.user_id as reporter_user_id,
+                gu.user_type as reporter_user_type,
                 CASE 
                     WHEN ir.reported_by IS NULL THEN 'Anonymous'
                     WHEN gu.first_name IS NOT NULL THEN CONCAT(gu.first_name, ' ', gu.last_name)
                     ELSE CONCAT('User ID: ', ir.reported_by)
                 END as reporter_name,
-                (
-                    6371 * acos(
-                        cos(radians(?)) *
-                        cos(radians(ir.latitude)) *
-                        cos(radians(ir.longitude) - radians(?)) +
-                        sin(radians(?)) *
-                        sin(radians(ir.latitude))
-                    )
-                ) AS distance_km
-            FROM 
-                incident_reports ir
+                s.name as assigned_staff_name,
+                s.role as assigned_staff_role
+                FROM incident_reports ir
                 LEFT JOIN general_users gu ON ir.reported_by = gu.user_id
-            WHERE 
-                ir.assigned_to = ?";
+                LEFT JOIN staff s ON ir.assigned_to = s.staff_id
+                WHERE ir.assigned_to = ?";
             
             $params = [
                 $location['latitude'],
@@ -651,8 +735,14 @@ class IncidentReport {
             
             $incidents = [];
             while ($row = $result->fetch_assoc()) {
-                // Round distance to 2 decimal places
-                $row['distance_km'] = round($row['distance_km'], 2);
+                // Ensure incident_id is present
+                if (!isset($row['incident_id'])) {
+                    $row['incident_id'] = null;
+                }
+                // Round distance to 2 decimal places if present
+                if (isset($row['distance_km'])) {
+                    $row['distance_km'] = round($row['distance_km'], 2);
+                }
                 $incidents[] = $row;
             }
             

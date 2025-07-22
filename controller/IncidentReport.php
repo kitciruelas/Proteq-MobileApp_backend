@@ -262,7 +262,61 @@ class IncidentReportController {
         
         echo json_encode($result);
     }
-}
+
+    /**
+     * Update an incident report (status, priority, reporter status, validation)
+     */
+    public function updateIncident() {
+        $token = SessionManager::getTokenFromHeader();
+        if (!$token || !SessionManager::isLoggedIn($token)) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Authentication required.']);
+            return;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed. Use PUT.']);
+            return;
+        }
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        // Try to get incident_id from input or query string
+        $incidentId = null;
+        if (isset($input['incident_id']) && !empty($input['incident_id'])) {
+            $incidentId = $input['incident_id'];
+        } elseif (isset($_GET['incident_id']) && !empty($_GET['incident_id'])) {
+            $incidentId = $_GET['incident_id'];
+        }
+
+        if (!$incidentId) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Incident ID is missing. Cannot validate or update incident.']);
+            return;
+        }
+
+        $updateData = [];
+        if (isset($input['status'])) {
+            $updateData['status'] = strtolower($input['status']);
+            // If status is rejected or closed, set validation_status
+            if (in_array(strtolower($input['status']), ['rejected', 'closed'])) {
+                $updateData['validation_status'] = strtolower($input['status']);
+            }
+        }
+        if (isset($input['priority_level'])) {
+            $updateData['priority_level'] = strtolower($input['priority_level']);
+        }
+        if (isset($input['reporter_safe_status'])) {
+            $updateData['reporter_safe_status'] = strtolower($input['reporter_safe_status']);
+        }
+        $result = $this->incidentModel->updateIncident($incidentId, $updateData);
+        if ($result['success']) {
+            http_response_code(200);
+        } else {
+            http_response_code(400);
+        }
+        echo json_encode($result);
+    }
+} // End of IncidentReportController
 
 // Route the request to the appropriate method
 $controller = new IncidentReportController();
@@ -281,6 +335,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'message' => 'Invalid action. Use ?action=assigned to get assigned incidents.'
         ]);
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $controller->updateIncident();
 } else {
     http_response_code(405);
     echo json_encode([

@@ -54,4 +54,25 @@ class WelfareCheck {
         $stmt->bind_param('i', $welfare_id);
         return $stmt->execute();
     }
+
+    // Check if user has already responded to a welfare check for an emergency
+    public function hasUserResponded($emergency_id, $user_id) {
+        $query = "SELECT * FROM {$this->table} WHERE emergency_id = ? AND user_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $emergency_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user_response = $result->fetch_assoc();
+        return $user_response !== null;
+    }
+
+    // Get the user's welfare check response for an emergency
+    public function getUserResponse($emergency_id, $user_id) {
+        $query = "SELECT * FROM {$this->table} WHERE emergency_id = ? AND user_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $emergency_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 } 
