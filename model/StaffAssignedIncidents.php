@@ -104,9 +104,13 @@ class StaffAssignedIncidents {
                 $types .= 's';
             }
             
-            // Default filter for in_progress incidents if no status specified
-            if (empty($filters['status'])) {
-                $query .= " AND ir.status IN ('in_progress')";
+            // Add filter for resolved_today
+            if (!empty($filters['resolved_today'])) {
+                $query .= " AND DATE(ir.updated_at) = CURDATE()";
+            }
+            // Only apply default pending/in_progress filter if neither status nor resolved_today is set
+            if (empty($filters['status']) && empty($filters['resolved_today'])) {
+                $query .= " AND ir.status IN ('pending', 'in_progress')";
             }
             
             // Order by priority and date

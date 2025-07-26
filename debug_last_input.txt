@@ -1,1 +1,1 @@
-{"incident_type":"Fire","description":"tessstfure","longitude":121.438411,"latitude":13.805618,"priority_level":"Moderate","safety_status":"injured"}
+{"incident_type":"Fire","description":"Testing Fire 1","longitude":121.43838,"latitude":13.805511,"priority_level":"High","safety_status":"unknown"}

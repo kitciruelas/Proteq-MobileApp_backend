@@ -3,6 +3,15 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../model/StaffAssignedIncidents.php';
 
+/**
+ * StaffAssignedIncidents API
+ * 
+ * Query parameters supported:
+ *   - status: string (e.g. 'in_progress', 'resolved', etc.)
+ *   - priority_level: string
+ *   - incident_type: string
+ *   - resolved_today: 1 or true (returns only incidents updated today)
+ */
 class StaffAssignedIncidentsController {
     private $assignedModel;
     public function __construct() {
@@ -64,7 +73,10 @@ class StaffAssignedIncidentsController {
         if (isset($_GET['incident_type'])) {
             $filters['incident_type'] = $_GET['incident_type'];
         }
-
+        // Add support for resolved_today filter (only if value is '1' or 'true')
+        if (isset($_GET['resolved_today']) && ($_GET['resolved_today'] === '1' || strtolower($_GET['resolved_today']) === 'true')) {
+            $filters['resolved_today'] = 1;
+        }
         // Get assigned incidents
         $result = $this->assignedModel->getAssignedIncidents($currentUserId, $filters);
 
