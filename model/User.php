@@ -311,5 +311,79 @@ class User {
             ];
         }
     }
+
+    public function getUserByEmail($email) {
+        $query = "SELECT * FROM general_users WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    public function setUserOtp($user_id, $otp, $expires) {
+        try {
+            $stmt = $this->conn->prepare('SELECT id FROM user_otps WHERE user_id = ?');
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result && $result->num_rows > 0) {
+                $updateStmt = $this->conn->prepare('UPDATE user_otps SET otp = ?, otp_expires = ?, created_at = CURRENT_TIMESTAMP WHERE user_id = ?');
+                $updateStmt->bind_param("sii", $otp, $expires, $user_id);
+                return $updateStmt->execute();
+            } else {
+                $insertStmt = $this->conn->prepare('INSERT INTO user_otps (user_id, otp, otp_expires) VALUES (?, ?, ?)');
+                $insertStmt->bind_param("isi", $user_id, $otp, $expires);
+                return $insertStmt->execute();
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function verifyOtp($user_id, $otp) {
+        try {
+            $stmt = $this->conn->prepare('SELECT otp, otp_expires FROM user_otps WHERE user_id = ?');
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if (!$row) {
+                return [
+                    'success' => false,
+                    'message' => 'No OTP found for this user.',
+                    'status_code' => 404
+                ];
+            }
+
+            $current_time = time();
+            if ($otp === $row['otp'] && $current_time < $row['otp_expires']) {
+                return [
+                    'success' => true,
+                    'message' => 'OTP is valid.',
+                    'status_code' => 200
+                ];
+            } else if ($otp !== $row['otp']) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid OTP.',
+                    'status_code' => 400
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'OTP expired.',
+                    'status_code' => 400
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage(),
+                'status_code' => 500
+            ];
+        }
+    }
 }
 ?>

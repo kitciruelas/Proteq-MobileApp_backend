@@ -1,1 +1,1 @@
-{"incident_type":"Fire","description":"Testing Fire 1","longitude":121.43838,"latitude":13.805511,"priority_level":"High","safety_status":"unknown"}
+{"incident_type":"Medical","description":"test 12","longitude":121.165512,"latitude":13.96654,"priority_level":"Moderate","safety_status":"injured"}

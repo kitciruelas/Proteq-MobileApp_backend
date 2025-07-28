@@ -46,6 +46,78 @@ class SessionManager {
     }
 
     /**
+     * Find existing session for user by user_id or email
+     * @param int|null $userId
+     * @param string|null $email
+     * @return string|null
+     */
+    private static function findExistingUserSession($userId = null, $email = null) {
+        if (!$userId && !$email) return null;
+        
+        $sql = 'SELECT token FROM sessions WHERE data LIKE ?';
+        $params = [];
+        
+        if ($userId) {
+            $sql .= ' OR data LIKE ?';
+            $params[] = '%"user_id":"' . $userId . '"%';
+        }
+        
+        if ($email) {
+            $params[] = '%"email":"' . $email . '"%';
+        }
+        
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($row) {
+            // Check if session is not expired
+            $session = self::loadSession($row['token']);
+            if ($session && !self::isSessionExpired($row['token'])) {
+                return $row['token'];
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Find existing session for staff by staff_id or email
+     * @param int|null $staffId
+     * @param string|null $email
+     * @return string|null
+     */
+    private static function findExistingStaffSession($staffId = null, $email = null) {
+        if (!$staffId && !$email) return null;
+        
+        $sql = 'SELECT token FROM sessions WHERE data LIKE ?';
+        $params = [];
+        
+        if ($staffId) {
+            $sql .= ' OR data LIKE ?';
+            $params[] = '%"staff_id":"' . $staffId . '"%';
+        }
+        
+        if ($email) {
+            $params[] = '%"email":"' . $email . '"%';
+        }
+        
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($row) {
+            // Check if session is not expired
+            $session = self::loadSession($row['token']);
+            if ($session && !self::isSessionExpired($row['token'])) {
+                return $row['token'];
+            }
+        }
+        
+        return null;
+    }
+
+    /**
      * Generate a unique session token
      * @return string
      */
@@ -129,6 +201,28 @@ class SessionManager {
      * @return string
      */
     public static function setUserSession($userData) {
+        // Check if user already has an active session
+        $existingToken = self::findExistingUserSession($userData['user_id'] ?? null, $userData['email'] ?? null);
+        
+        if ($existingToken) {
+            // Update existing session
+            $session = self::loadSession($existingToken);
+            if ($session) {
+                $session['last_activity'] = time();
+                $session['login_time'] = time();
+                // Update any changed user data
+                $session['user_type'] = $userData['user_type'] ?? $session['user_type'];
+                $session['first_name'] = $userData['first_name'] ?? $session['first_name'];
+                $session['last_name'] = $userData['last_name'] ?? $session['last_name'];
+                $session['department'] = $userData['department'] ?? $session['department'];
+                $session['college'] = $userData['college'] ?? $session['college'];
+                $session['status'] = $userData['status'] ?? $session['status'];
+                self::saveSession($existingToken, $session);
+                return $existingToken;
+            }
+        }
+        
+        // Create new session if no existing session found
         $token = self::generateToken();
         $session = [
             'user_id' => $userData['user_id'] ?? null,
@@ -152,6 +246,27 @@ class SessionManager {
      * @return string
      */
     public static function setStaffSession($staffData) {
+        // Check if staff already has an active session
+        $existingToken = self::findExistingStaffSession($staffData['staff_id'] ?? null, $staffData['email'] ?? null);
+        
+        if ($existingToken) {
+            // Update existing session
+            $session = self::loadSession($existingToken);
+            if ($session) {
+                $session['last_activity'] = time();
+                $session['login_time'] = time();
+                // Update any changed staff data
+                $session['role'] = $staffData['role'] ?? $session['role'];
+                $session['user_type'] = $staffData['role'] ?? $session['user_type'];
+                $session['name'] = $staffData['name'] ?? $session['name'];
+                $session['availability'] = $staffData['availability'] ?? $session['availability'];
+                $session['status'] = $staffData['status'] ?? $session['status'];
+                self::saveSession($existingToken, $session);
+                return $existingToken;
+            }
+        }
+        
+        // Create new session if no existing session found
         $token = self::generateToken();
         $session = [
             'staff_id' => $staffData['staff_id'] ?? null,
@@ -298,6 +413,14 @@ class SessionManager {
         }
 
         return null;
+    }
+
+    // Add public wrappers for session data
+    public static function getSessionData($token) {
+        return self::loadSession($token);
+    }
+    public static function setSessionData($token, $session) {
+        self::saveSession($token, $session);
     }
 }
 ?> 

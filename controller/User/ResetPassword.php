@@ -20,15 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../../model/User.php';
+require_once __DIR__ . '/../../config/session.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
-if (!isset($input['email'], $input['new_password'])) {
-    echo json_encode(['success' => false, 'message' => 'Email, OTP, expected_otp, and new_password are required.']);
+if (!isset($input['email'], $input['otp'], $input['new_password'])) {
+    echo json_encode(['success' => false, 'message' => 'Email, OTP, and new_password are required.']);
     exit;
 }
 
 $email = trim($input['email']);
-
+$otp = $input['otp'];
 $new_password = $input['new_password'];
 
 if ($otp === $expected_otp) {
